@@ -22,21 +22,6 @@ import urlparse
 def home():
     """Render website's home page."""
     return render_template('home.html')
-    
-@app.route('/api/users/register', methods=['POST'])
-def register():
-    json_data = json.loads(request.data)
-    
-    
-    # if request.method == 'POST':
-    #     username = request.form['username']
-    #     email = request.form['email']
-    #     password = request.form['password']
-    #     age = request.form['age']
-    #     gender = request.form['gender']
-    #     image = request.files['image']
-        
-        
 
 
 ###
