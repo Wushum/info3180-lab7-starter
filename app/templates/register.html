@@ -1,0 +1,42 @@
+{%extends "base.html"%}
+
+{%block main%}   
+ 
+    {%include 'flash.html'%}
+ 
+<form action="{{ url_for('') }}" method="post"  enctype="multipart/form-data">   
+
+    <h3>Registration Form</h3><br>
+    
+    Username: (Required*)<br>
+    Pleae enter your Username<br>
+    <input type = "text" id="username" name = "username" required><br><br>
+    
+    Firstname: (Required*)<br>
+    Pleae enter your Firstname<br>
+    <input type = "text" id="firstname" name = "firstname" required><br><br>
+    
+    Lastname: (Required*)<br>
+    Pleae enter your Lastname<br>
+    <input type = "text" id="lastname" name = "lastname" required><br><br>
+    
+    
+    <label for="gender">Gender</label><br>
+        <select name="gender">
+             <option value="male">Male</option>
+             <option value="female">Female</option>
+        </select><br><br>
+    
+    
+    Age: (Required*)<br>
+    Pleae enter your age<br>
+    <input type = "number" id = "age" name = "age" required><br><br>
+    
+    <p>Upload profile photo</p>
+    <input type ="file" id="pic" name="pic" accept="image/*" required></input><br>
+            
+    
+    <input type="submit" name="submit" value="submit">
+    </form>
+
+{% endblock %}
