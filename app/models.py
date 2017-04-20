@@ -1,50 +1,47 @@
-from app import db
+from . import db
 
 class Wishlist(db.Model):
     id              = db.Column(db.Integer, primary_key = True)
+    userid          = db.Column(db.Integer, db.ForeignKey('user.id'))
     title           = db.Column(db.String(200))
     description     = db.Column(db.String(5000))
     url             = db.Column(db.String(500))
     thumbnail       = db.Column(db.String(500))
-    userid          = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_on = db.Column(db.DateTime)
     
-    def __init__(self, id, title, description, url, thumbnail, userid):
-        
+    def __init__(self, userid, title, description, url, thumbnail, created_on):
         self.id = id
+        self.userid = userid        
         self.title = title
         self.description = description
         self.url = url
         self.thumbnail = thumbnail
-        self.userid = userid
-        
-    
+        self.created_on = created_on
+
     def __repr__(self):
-        return '<Item %r>' % self.title    
+        return '<Wishlist %r>' % self.title    
 
 
 class Profile(db.Model):
-    username    = db.Column(db.String(30),primary_key=True)
-    userid      = db.Column(db.Integer)
-    firstname   = db.Column(db.String(30))
-    lastname    = db.Column(db.String(30))
-    image       = db.Column(db.String(30))
-    sex         = db.Column(db.String(6))
-    age         = db.Column(db.Integer)
+    userid = db.Column(db.Integer, unique=True)
+    username = db.Column(db.String(30), unique=True, primary_key=True)
+    firstname = db.Column(db.String(30))
+    lastname = db.Column(db.String(30))
+    email = db.Column(db.String(30), unique=True)
+    gender = db.Column(db.String(6))
+    password = db.Column(db.String(255))
     profile_added_on = db.Column(db.DateTime)
     
-    
-    def __init__(self, username, userid, firstname, lastname, image, sex, age, profile_added_on):
-        
-        self.username = username
+    def __init__(self, userid, username, firstname, lastname, email, gender, password, profile_added_on):
         self.userid = userid
+        self.username = username
         self.firstname = firstname
         self.lastname = lastname
-        self.image = image
-        self.sex = sex
-        self.age = age
+        self.email = email
+        self.gender = gender
+        self.password = password
         self.profile_added_on = profile_added_on
         
-
     def __repr__(self):
         return'<Profile %r>' % self.username
         

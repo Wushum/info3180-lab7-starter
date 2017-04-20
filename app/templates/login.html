@@ -15,6 +15,9 @@
         {{ form.password(class='form-control') }}
       </div>
       <button type="submit" name="submit" class="btn btn-primary btn-block">Log in</button>
+      <a href="{{ url_for('register') }}">Sign Up Here</a>
     </form>
   </div>
 {% endblock %}
+
+<!-- We can add a "dont have an account? sign up here: -->
