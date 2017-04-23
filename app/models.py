@@ -10,7 +10,6 @@ class Wishlist(db.Model):
     created_on = db.Column(db.DateTime)
     
     def __init__(self, userid, title, description, url, thumbnail, created_on):
-        self.id = id
         self.userid = userid        
         self.title = title
         self.description = description
@@ -18,6 +17,21 @@ class Wishlist(db.Model):
         self.thumbnail = thumbnail
         self.created_on = created_on
 
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        try:
+            return unicode(self.id)  # python 2 support
+        except NameError:
+            return str(self.id)  # python 3 support
+            
     def __repr__(self):
         return '<Wishlist %r>' % self.title    
 
@@ -42,7 +56,22 @@ class Profile(db.Model):
         self.password = password
         self.profile_added_on = profile_added_on
         
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        try:
+            return unicode(self.id)  # python 2 support
+        except NameError:
+            return str(self.id)  # python 3 support
+        
     def __repr__(self):
         return'<Profile %r>' % self.username
         
-#Noot finish 
+#Complete

@@ -21,3 +21,5 @@ class WishForm(FlaskForm):
     title = StringField('title', validators=[InputRequired()])
     description = TextAreaField('description', validators=[InputRequired()])
     url = StringField('', validators=[InputRequired()])
+    
+#Complete

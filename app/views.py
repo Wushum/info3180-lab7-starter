@@ -16,6 +16,7 @@ from flask_wtf import Form
 from app.models import Profile, Wishlist
 from forms import RegisterForm, LoginForm, WishForm
 from random import randint
+from image_getter import getImg
 
 ###
 # Routing for your application.
@@ -32,8 +33,18 @@ def about():
     """Render the website's about page."""
     return render_template('about.html', name="Project 2")
 
-#Sign Up    
-@app.route('/api/users/register', methods=['POST'])
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'danger')
+    return redirect(url_for('login'))
+    
+### 
+#API Routes
+
+#Creates user, saves to database
+@app.route("/api/users/register", methods=["POST"])
 def register():
     form = RegisterForm()
     
@@ -53,10 +64,10 @@ def register():
         flash('Profile for '+ username +' added','success')    
         return redirect(url_for('home'))
     return render_template('register.html', form = form)
-    
-@app.route("/login", methods=["GET", "POST"])
-def login():
 
+#login 
+@app.route("/api/users/login", methods=["POST"])
+def login():
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
         
@@ -76,19 +87,56 @@ def login():
                 return redirect(url_for('login'))
     return render_template("login.html", form=form)
 
-@app.route("/logout")
+#Adding items to wishlist #Returns a user's wishlist
+@app.route("/api/users/{userid}/wishlist", methods=["GET","POST"])
+def wishlist(userid):
+    if request.method == "GET":
+        wishes = Wishlist.query.filter_by(userid=current_user.get_id()).all()
+
+    elif request.method == "POST":
+        form = WishForm()
+        if form.validate_on_submit():
+            userid = current_user.get_id()
+            title = form.title.data
+            description = form.description.data
+            url = form.url.data
+            thumbnail = form.thumbnail.data
+            created_on = #gettime
+            itemid = random.randint(2500, 30000)
+
+            newitem = WishList(
+                            itemid=itemid,
+                            userid=userid,
+                            title=title,
+                            description=description,
+                            url=url,
+                            thumbnail=thumbnail,
+                            created_on = created_on)
+
+            db.session.add(newitem)
+            db.session.commit()
+    return render_template("wishlist.html", userid=current_user.get_id(), form=form, wishes=wishes)
+
+#Accepts URL, returns JSON list of thumbnails
+@app.route("/api/thumbnails", methods=["GET"])
+def thumbnails():
+    url = request.args.get("url")
+    if url == "":
+        return jsonify({"error": "1","data": {},"message": "Unable to extract thumbnails"})
+    else:
+        thumbs = {'thumbails':getImg(url)}
+        return jsonify(error='Null', thumbs=thumbs, message="Success")
+
+#Deletes item from user's wishlist
+@app.route("/api/users/{userid}/wishlist/{itemid}", methods=["GET", "DELETE"])
 @login_required
-def logout():
-    logout_user()
-    flash('You have been logged out.', 'danger')
-    return redirect(url_for('login'))
-    
+def deleteitem(userid, itemid):
+    db.session.delete(Wishlist.query.filter_by(userid=userid,id=itemid).first())
+    db.session.commit()
+    return redirect (url_for("wishlist", userid=current_user.get_id()))
 
-###
-# The functions below should be applicable to all Flask apps.
-###
 
-@app.route('/<file_name>.txt')
+#
 def send_text_file(file_name):
     """Send your static text file."""
     file_dot_text = file_name + '.txt'
